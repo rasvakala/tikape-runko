@@ -13,11 +13,11 @@ import java.util.ArrayList;
 import java.util.List;
 import tikape.runko.domain.Opiskelija;
 
-public class OpiskelijaDao implements Dao<Opiskelija, Integer> {
+public class AlalaudeDao implements Dao<Opiskelija, Integer> {
 
     private Database database;
 
-    public OpiskelijaDao(Database database) {
+    public AlalaudeDao(Database database) {
         this.database = database;
     }
 
