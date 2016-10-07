@@ -1,13 +1,15 @@
 package tikape.runko.domain;
 
-public class Opiskelija {
+public class Aihe {
 
     private Integer id;
     private String nimi;
+    private String kuvaus;
 
-    public Opiskelija(Integer id, String nimi) {
+    public Aihe(Integer id, String nimi, String kuvaus) {
         this.id = id;
         this.nimi = nimi;
+        this.kuvaus = kuvaus;
     }
 
     public Integer getId() {
@@ -26,4 +28,12 @@ public class Opiskelija {
         this.nimi = nimi;
     }
 
+    public String getKuvaus() {
+        return kuvaus;
+    }
+
+    public void setKuvaus(String kuvaus) {
+        this.kuvaus = kuvaus;
+    }
+     
 }
