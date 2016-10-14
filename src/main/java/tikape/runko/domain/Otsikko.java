@@ -15,10 +15,11 @@ public class Otsikko {
     private String oTeksti;
     private String nimiM;
     private String teksti;
-    private Timestamp aloitettu;
+    private String aloitettu;
     private Integer aiheId;
+    public Object getId;
 
-    public Otsikko(Integer id, String oTeksti, String nimiM, String teksti, Timestamp aloitettu, Integer aiheId) {
+    public Otsikko(Integer id, String oTeksti, String nimiM, String teksti, String aloitettu, Integer aiheId) {
         this.id = id;
         this.oTeksti = oTeksti;
         this.nimiM = nimiM;
@@ -60,11 +61,11 @@ public class Otsikko {
         this.teksti = teksti;
     }
 
-    public Timestamp getAloitettu() {
+    public String getAloitettu() {
         return aloitettu;
     }
 
-    public void setAloitettu(Timestamp aloitettu) {
+    public void setAloitettu(String aloitettu) {
         this.aloitettu = aloitettu;
     }
 

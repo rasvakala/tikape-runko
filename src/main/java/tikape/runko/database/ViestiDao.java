@@ -3,16 +3,39 @@ package tikape.runko.database;
 
 import java.sql.*;
 import java.util.List;
+import tikape.runko.domain.Otsikko;
 import tikape.runko.domain.Viesti;
 
 public class ViestiDao implements Dao<Viesti, Integer>{
     private Database database;
+    //private Dao<Otsikko, Integer> otsikkoDao;
+    private Otsikko otsikko; 
 
-    public ViestiDao(Database database) {
+    public ViestiDao(Database database, Otsikko otsikko) {
         this.database = database;
+        this.otsikko = otsikko;
     }
+
     
     //metodi sanojen ja nimimerkin perusteella etsimiseen -sanat esim. listan avulla
+    
+    public Timestamp alueenViimeisinViesti() throws SQLException {
+        Connection connection = database.getConnection();
+        PreparedStatement stmt = connection.prepareStatement("SELECT aika FROM Viesti WHERE otsikko =  " + otsikko.getId + " ORDER BY aika DESC LIMIT 1;");
+        stmt.setObject(1, otsikko.getId);
+        
+         ResultSet rs = stmt.executeQuery();
+        boolean hasOne = rs.next();
+        if (!hasOne) {
+            return null;
+        }
+        
+        Timestamp aikaleima = rs.getTimestamp("aika"); //Timestamp muuttujatyyppi! Tarkista!
+        
+        stmt.close();
+        connection.close();
+        return aikaleima;
+    }
     
     @Override
     public Viesti findOne(Integer id) throws SQLException {
@@ -28,7 +51,7 @@ public class ViestiDao implements Dao<Viesti, Integer>{
 
         //alusta viestin muuttujat
 
-        Viesti v = new Viesti(id, nimiM, viesti, aika, otsikkoId);
+        Viesti v = new Viesti(null, null, null, null, null);
 
         rs.close();
         stmt.close();
@@ -40,11 +63,14 @@ public class ViestiDao implements Dao<Viesti, Integer>{
     @Override
     public List<Viesti> findAll() throws SQLException {
         //ei toteutettu
+        return null;
     }
 
     @Override
     public void delete(Integer id) throws SQLException {
         //ei toteutettu
     }
+    
+    
     
 }

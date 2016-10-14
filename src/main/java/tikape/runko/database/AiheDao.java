@@ -2,15 +2,20 @@
 package tikape.runko.database;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 import tikape.runko.domain.Aihe;
+import tikape.runko.domain.Otsikko;
 
 public class AiheDao implements Dao<Aihe, Integer>{
     private Database database;
+    private Dao<Otsikko, Integer> otsikkoDao;
 
     public AiheDao(Database database) {
         this.database = database;
     }
+    
+    
 
     @Override
     public Aihe findOne(Integer id) throws SQLException {
@@ -39,7 +44,32 @@ public class AiheDao implements Dao<Aihe, Integer>{
 
     @Override
     public List<Aihe> findAll() throws SQLException {
-        //ei toteutettu
+        Connection connection = database.getConnection();
+        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM Aihe;");
+
+        ResultSet rs = stmt.executeQuery();
+        boolean hasOne = rs.next();
+        if (!hasOne) {
+            return null;
+        }
+
+        List<Aihe> aiheet = new ArrayList<>();
+
+        while (rs.next()) {
+            int id = rs.getInt("aihe_id");
+            String nimi = rs.getString("nimi");
+            String kuvaus = rs.getString("kuvaus");
+                                
+            aiheet.add(new Aihe(id, nimi, kuvaus));
+            
+        }
+        
+        
+        rs.close();
+        stmt.close();
+        connection.close();
+        
+        return aiheet;
     }
 
     @Override

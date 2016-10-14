@@ -74,6 +74,7 @@ public class AlalaudeDao implements Dao<Aihe, Integer> {
     @Override
     public Aihe findOne(Integer key) throws SQLException { 
         //ei toteutettu
+        return null;
     }
 
 }

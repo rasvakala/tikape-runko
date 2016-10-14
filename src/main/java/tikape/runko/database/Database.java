@@ -45,13 +45,11 @@ public class Database {
         //poistetaan myöhemmin taulu "Opiskelija"
         //poistetaan myöh. Opiskelija-taulun testidata
         
-        lista.add("CREATE TABLE Opiskelija (id integer PRIMARY KEY, nimi varchar(255));");
-        lista.add("CREATE TABLE Aihe (aihe_id integer PRIMARY KEY, nimi varchar(60) NOT NULL UNIQUE, kuvaus varchar(120));
-        lista.add("CREATE TABLE Otsikko (otsikko_id integer PRIMARY KEY NOT NULL,otsikkoteksti varchar(60) NOT NULL, nimimerkki varchar(60) NOT NULL,teksti varchar(1000),keskustelu_aloitettu DATETIME DEFAULT CURRENT_TIMESTAMP, aihe integer NOT NULL, FOREIGN KEY (aihe) REFERENCES Aihe(aihe_id));
-        lista.add("CREATE TABLE Viesti (viesti_id integer PRIMARY KEY,nimimerkki varchar(60) NOT NULL,viesti varchar(1000) NOT NULL,aika DATETIME DEFAULT CURRENT_TIMESTAMP,otsikko integer NOT NULL, FOREIGN KEY (otsikko) REFERENCES Otsikko(otsikko_id)));
-        lista.add("INSERT INTO Opiskelija (nimi) VALUES ('Platon');");
-        lista.add("INSERT INTO Opiskelija (nimi) VALUES ('Aristoteles');");
-        lista.add("INSERT INTO Opiskelija (nimi) VALUES ('Homeros');");
+        /*
+        lista.add("CREATE TABLE Aihe (aihe_id integer PRIMARY KEY, nimi varchar(60) NOT NULL UNIQUE, kuvaus varchar(120));");
+        lista.add("CREATE TABLE Otsikko (otsikko_id integer PRIMARY KEY NOT NULL,otsikkoteksti varchar(60) NOT NULL, nimimerkki varchar(60) NOT NULL,teksti varchar(1000),keskustelu_aloitettu DATETIME DEFAULT CURRENT_TIMESTAMP, aihe integer NOT NULL, FOREIGN KEY (aihe) REFERENCES Aihe(aihe_id));");
+        lista.add("CREATE TABLE Viesti (viesti_id integer PRIMARY KEY,nimimerkki varchar(60) NOT NULL,viesti varchar(1000) NOT NULL,aika DATETIME DEFAULT CURRENT_TIMESTAMP,otsikko integer NOT NULL, FOREIGN KEY (otsikko) REFERENCES Otsikko(otsikko_id)));");
+        */
 
         return lista;
     }
