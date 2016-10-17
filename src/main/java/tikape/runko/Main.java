@@ -36,12 +36,14 @@ public class Main {
 //            return new ModelAndView(map, "index");
 //        }, new ThymeleafTemplateEngine());
 //
-//        get("/opiskelijat", (req, res) -> {
+//Tää on hyvä tässä ja lisäksi voisi laittaa vielä pari muuta, esim. otsikot
+//        get("/aiheet", (req, res) -> {
 //            HashMap map = new HashMap<>();
-//            map.put("opiskelijat", alalaudeDao.findAll());
+//           map.put("aiheet", aiheDao.findAll());
 //
-//            return new ModelAndView(map, "opiskelijat");
+//            return new ModelAndView(map, "aiheet");
 //        }, new ThymeleafTemplateEngine());
+//Tähän asti
 //
 //        get("/opiskelijat/:id", (req, res) -> {
 //            HashMap map = new HashMap<>();
