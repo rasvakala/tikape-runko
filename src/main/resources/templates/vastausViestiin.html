@@ -1,0 +1,35 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+    <head>
+        <title>Otsikko</title>
+        <meta charset="utf-8" />
+    </head>
+
+    <body>
+        <h1>Vastaa viestiketjuun</h1>
+
+        <ol>
+            <li th:each="viesti: ${viestit}">
+                <span th:text="${viesti.otsikkoId}">otsikko</span> <a th:href="${'/viestit/' + viesti.id}">linkki</a>
+
+
+            </li>
+        </ol>
+
+        <form action="/" method="GET" id="form1">
+
+            <!--Mainissä pitäisi olla mappays tätä varten otsikko.oTeksti-->
+
+            <span th.text="${otsikko.oTeksti">Vastaa viestiketjuun</span>
+
+            <br/> <br/><textarea name="Viesti" rows="10" cols="100"></textarea>
+            <button type="submit" form="form1" value="Submit"<br/><br/>
+                Lähetä</button> 
+        </form>
+
+        <!--<p>Vastaa <span th:text="${viesti}">jotain?</span></p>-->
+
+        <!--<p><a href="/opiskelijat">Tästä opiskelijalistaukseen.</a></p>-->
+    </body>
+</html>
