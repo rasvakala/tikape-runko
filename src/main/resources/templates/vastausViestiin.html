@@ -7,11 +7,11 @@
     </head>
 
     <body>
-        <h1>Vastaa viestiketjuun</h1>
+        <h1>Tähän ketjun otsikko, johon vastaus</h1>
 
         <ol>
             <li th:each="viesti: ${viestit}">
-                <span th:text="${viesti.otsikkoId}">otsikko</span> <a th:href="${'/viestit/' + viesti.id}">linkki</a>
+                <!-- <span th:text="${viesti.otsikkoId}">otsikko</span> <a th:href="${'/viestit/' + viesti.id}">linkki</a>-->
 
 
             </li>
@@ -27,7 +27,7 @@
             <button type="submit" form="form1" value="Submit"<br/><br/>
                 Lähetä</button> 
         </form>
-
+<!-- Textarean yläp. kirjoita viesti tähän, ennen lähetä-painiketta nimimerkki -->
         <!--<p>Vastaa <span th:text="${viesti}">jotain?</span></p>-->
 
         <!--<p><a href="/opiskelijat">Tästä opiskelijalistaukseen.</a></p>-->
