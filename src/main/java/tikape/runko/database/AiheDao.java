@@ -74,7 +74,21 @@ public class AiheDao implements Dao<Aihe, Integer>{
 
     @Override
     public void delete(Integer id) throws SQLException {
-        //ei toteutettu
+        // Toimii!.
+        Connection conn = this.database.getConnection();
+        Statement stmt = conn.createStatement();
+        stmt.execute("DELETE FROM Aihe WHERE aihe_id = " + id + "");
+        conn.close();
+    }
+    
+    
+    public void luoUusiAihe(String nimi, String kuvaus) throws Exception {
+        try (Connection conn = this.database.getConnection()) {
+            Statement stmt = conn.createStatement();
+            stmt.execute("INSERT INTO Aihe(nimi, kuvaus)"
+                    + "VALUES ('" + nimi + "', '" + kuvaus + "')");
+        }
+ 
     }
     
 }

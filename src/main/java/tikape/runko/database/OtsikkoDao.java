@@ -59,6 +59,16 @@ public class OtsikkoDao implements Dao<Otsikko, Integer> {
         return aiheenOtsikot;
     }
     
+    //Luo uuden Otsikon. Aikaleima ja otsikko_id on jätetty automaattisiksi.
+    //Toimii!
+    public void luoUusiOtsikko(String otsikkoteksti, String nimimerkki, String teksti, int aihe_id) throws Exception {
+        try (Connection conn = this.database.getConnection()) {
+            Statement stmt = conn.createStatement();
+            stmt.execute("INSERT INTO Otsikko(otsikkoteksti, nimimerkki, teksti, aihe) "
+                    + "VALUES ('" + otsikkoteksti + "', '" + nimimerkki + "', '" + teksti + "'," + aihe_id + ")");
+        }
+
+    }
     
 
     @Override
@@ -91,6 +101,12 @@ public class OtsikkoDao implements Dao<Otsikko, Integer> {
 
     @Override
     public void delete(Integer id) throws SQLException {
-        //ei toteutettu
+        // Toimii!.
+        Connection conn = this.database.getConnection();
+        Statement stmt = conn.createStatement();
+        stmt.execute("DELETE FROM Otsikko WHERE otsikko_id = " + id + "");
+        conn.close();
     }
+    
+
 }

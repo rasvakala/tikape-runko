@@ -26,8 +26,20 @@ public class Main {
         ViestiDao viestiDao = new ViestiDao(database, otsikko);
         OtsikkoDao otsikkoDao = new OtsikkoDao(database, aihe, viestiDao);
 
-        System.out.println(aiheDao.findAll());
-        System.out.println(otsikkoDao.aiheenOtsikot(1));
+        //System.out.println(aiheDao.findAll());
+        //System.out.println(otsikkoDao.aiheenOtsikot(1));
+        
+        //Testaa uuden viestin luomista.
+        //Se toimii!
+        //viestiDao.luoUusiViesti("testaaja", "Testing, testing!", 2);
+        
+        //Testaa uuden otsikon luomista:
+        //otsikkoDao.luoUusiOtsikko("Kylläpä ärsyttää!", "Testaaja", "Vaikka ei enää ärsytäkään.", 2);
+        
+        //Testaa uuden aiheen luomista:
+        //aiheDao.luoUusiAihe("Rupattelu", "Keskustelua laidasta laitaan");
+        
+        //otsikkoDao.delete(3);
 
 //        get("/", (req, res) -> {
 //            HashMap map = new HashMap<>();

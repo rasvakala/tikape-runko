@@ -37,6 +37,17 @@ public class ViestiDao implements Dao<Viesti, Integer>{
         return aikaleima;
     }
     
+    //Luo uuden Viestin. Aikaleima ja otsikko_id on jätetty automaattisiksi.
+    //Toimii!
+        public void luoUusiViesti(String nimimerkki, String viesti, int otsikko_id) throws Exception {
+        try (Connection conn = this.database.getConnection()) {
+            Statement stmt = conn.createStatement();
+            stmt.execute("INSERT INTO Viesti(nimimerkki, viesti, otsikko) "
+                    + "VALUES ('" + nimimerkki + "', '" + viesti + "'," + otsikko_id + ")");
+        }
+
+    }
+    
     @Override
     public Viesti findOne(Integer id) throws SQLException {
         Connection connection = database.getConnection();
@@ -68,7 +79,11 @@ public class ViestiDao implements Dao<Viesti, Integer>{
 
     @Override
     public void delete(Integer id) throws SQLException {
-        //ei toteutettu
+        // Toimii!.
+        Connection conn = this.database.getConnection();
+        Statement stmt = conn.createStatement();
+        stmt.execute("DELETE FROM Viesti WHERE viesti_id = " + id + "");
+        conn.close();
     }
     
     
