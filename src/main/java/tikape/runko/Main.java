@@ -26,7 +26,7 @@ public class Main {
         ViestiDao viestiDao = new ViestiDao(database, otsikko);
         OtsikkoDao otsikkoDao = new OtsikkoDao(database, aihe, viestiDao);
 
-        //System.out.println(aiheDao.findAll());
+        //aiheDao.aiheetAakkosissa();
         //System.out.println(otsikkoDao.aiheenOtsikot(1));
         
         //Testaa uuden viestin luomista.

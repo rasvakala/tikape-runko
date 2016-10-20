@@ -3,6 +3,8 @@ package tikape.runko.database;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import tikape.runko.domain.Aihe;
 import tikape.runko.domain.Otsikko;
@@ -15,7 +17,39 @@ public class AiheDao implements Dao<Aihe, Integer>{
         this.database = database;
     }
     
-    
+    //Toteutettu sort java:n puolella, jotta kopioitu koodi vähenee.
+    //Varmuuden vuoksi myös select-kyselyversio kommenttina.
+    public List<Aihe> aiheetAakkosissa() throws SQLException {
+        List<Aihe> aiheet = new ArrayList<>();
+        aiheet = this.findAll();
+        Collections.sort(aiheet, new Comparator<Aihe>(){ 
+            @Override
+            public int compare(Aihe a1, Aihe a2)
+            { return a1.getNimi().compareTo(a2.getNimi()); } 
+        });
+               
+//        Connection connection = database.getConnection();
+//        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM Aihe ORDER BY nimi;");
+//
+//        ResultSet rs = stmt.executeQuery();
+//        boolean hasOne = rs.next();
+//        if (!hasOne) {
+//            return null;
+//        }
+//
+//        while (rs.next()) {
+//            int id = rs.getInt("aihe_id");
+//            String nimi = rs.getString("nimi");
+//            String kuvaus = rs.getString("kuvaus");                                
+//            aiheet.add(new Aihe(id, nimi, kuvaus));            
+//        }    
+//        
+//        rs.close();
+//        stmt.close();
+//        connection.close();
+        
+        return aiheet;
+    }
 
     @Override
     public Aihe findOne(Integer id) throws SQLException {
