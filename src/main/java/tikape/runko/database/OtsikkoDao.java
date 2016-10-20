@@ -2,6 +2,8 @@ package tikape.runko.database;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import tikape.runko.domain.Aihe;
 import tikape.runko.domain.Otsikko;
@@ -70,6 +72,28 @@ public class OtsikkoDao implements Dao<Otsikko, Integer> {
 
     }
     
+    public List<Otsikko> otsikotAakkosissa(int aihe_id) throws SQLException {
+        List<Otsikko> otsikot = new ArrayList<>();
+        otsikot = this.aiheenOtsikot(aihe_id);
+        Collections.sort(otsikot, new Comparator<Otsikko>(){ 
+            @Override
+            public int compare(Otsikko o1, Otsikko o2)
+            { return o1.getoTeksti().compareTo(o2.getoTeksti()); } 
+        });
+        return otsikot;
+    }
+    
+    //Tämä saattaa antaa vanhimmat otsikot ensin. Testaa!
+    public List<Otsikko> uusimmatOtsikot(int aihe_id) throws SQLException {
+        List<Otsikko> otsikot = new ArrayList<>();
+        otsikot = this.aiheenOtsikot(aihe_id);
+        Collections.sort(otsikot, new Comparator<Otsikko>(){ 
+            @Override
+            public int compare(Otsikko o1, Otsikko o2)
+            { return o1.getAloitettu().compareTo(o2.getAloitettu()); } 
+        });
+        return otsikot;
+    }
 
     @Override
     public Otsikko findOne(Integer id) throws SQLException {
@@ -84,7 +108,13 @@ public class OtsikkoDao implements Dao<Otsikko, Integer> {
         }
 
         //otsikon muuttujat tähän
-        Otsikko o = new Otsikko(null, null, null, null, null, null); //KORJAA TÄÄ
+        //int oid = rs.getInt("otsikko_id");
+        String oTeksti = rs.getString("otsikkoteksti");
+        String nimiM = rs.getString("nimimerkki");
+        String teksti = rs.getString("teksti");
+        String aloitettu = rs.getString("keskustelu_aloitettu");
+        Integer aiheId = rs.getInt("aihe");
+        Otsikko o = new Otsikko(id, oTeksti, nimiM, teksti, aloitettu, aiheId); 
 
         rs.close();
         stmt.close();
