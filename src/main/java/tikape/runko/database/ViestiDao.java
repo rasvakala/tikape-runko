@@ -1,4 +1,3 @@
-
 package tikape.runko.database;
 
 import java.sql.*;
@@ -6,45 +5,37 @@ import java.util.List;
 import tikape.runko.domain.Otsikko;
 import tikape.runko.domain.Viesti;
 
-public class ViestiDao implements Dao<Viesti, Integer>{
+public class ViestiDao implements Dao<Viesti, Integer> {
+
     private Database database;
-    //private Dao<Otsikko, Integer> otsikkoDao;
-    private Otsikko otsikko; 
+    private Otsikko otsikko;
 
     public ViestiDao(Database database, Otsikko otsikko) {
         this.database = database;
         this.otsikko = otsikko;
     }
-    
 
-    
-    //metodi sanojen ja nimimerkin perusteella etsimiseen -sanat esim. listan avulla
-    
+    //TODO metodi sanojen ja nimimerkin perusteella etsimiseen -sanat esim. listan avulla
     public Viesti otsikonViimeisinViesti(int otsikko_id) throws SQLException {
         Connection connection = database.getConnection();
         PreparedStatement stmt = connection.prepareStatement("SELECT aika FROM Viesti WHERE otsikko =  " + otsikko_id + " ORDER BY aika DESC LIMIT 1;");
         stmt.setObject(1, otsikko.getId);
-        
-         ResultSet rs = stmt.executeQuery();
+
+        ResultSet rs = stmt.executeQuery();
         boolean hasOne = rs.next();
         if (!hasOne) {
             return null;
         }
-        
-        Timestamp aikaleima = rs.getTimestamp("aika"); //Timestamp muuttujatyyppi! Tarkista!
-        
-        //Alusta tähän muuttujat!
-        
-        Viesti v = new Viesti;
-        
+        //Timestamp muuttujatyyppi! Tarkista!
+
         stmt.close();
         connection.close();
-        return v;
+        return luoViestiolio(rs);
     }
-    
+
     //Luo uuden Viestin. Aikaleima ja otsikko_id on jätetty automaattisiksi.
     //Toimii!
-        public void luoUusiViesti(String nimimerkki, String viesti, int otsikko_id) throws Exception {
+    public void luoUusiViesti(String nimimerkki, String viesti, int otsikko_id) throws Exception {
         try (Connection conn = this.database.getConnection()) {
             Statement stmt = conn.createStatement();
             stmt.execute("INSERT INTO Viesti(nimimerkki, viesti, otsikko) "
@@ -52,7 +43,17 @@ public class ViestiDao implements Dao<Viesti, Integer>{
         }
 
     }
-    
+
+    private Viesti luoViestiolio(ResultSet rs) throws SQLException {
+        Integer viestiId = rs.getInt("viesti_id");
+        String nimiM = rs.getString("nimimerkki");
+        String viesti = rs.getString("viesti");
+        Timestamp aika = rs.getTimestamp("aika");
+        Integer otsikkoId = rs.getInt("otsikko");
+
+        return new Viesti(viestiId, nimiM, viesti, aika, otsikkoId);
+    }
+
     @Override
     public Viesti findOne(Integer id) throws SQLException {
         Connection connection = database.getConnection();
@@ -65,15 +66,11 @@ public class ViestiDao implements Dao<Viesti, Integer>{
             return null;
         }
 
-        //alusta viestin muuttujat
-
-        Viesti v = new Viesti(null, null, null, null, null);
-
         rs.close();
         stmt.close();
         connection.close();
 
-        return v;
+        return luoViestiolio(rs);
     }
 
     @Override
@@ -90,7 +87,5 @@ public class ViestiDao implements Dao<Viesti, Integer>{
         stmt.execute("DELETE FROM Viesti WHERE viesti_id = " + id + "");
         conn.close();
     }
-    
-    
-    
+
 }

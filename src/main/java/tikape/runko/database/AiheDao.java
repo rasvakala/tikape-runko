@@ -1,4 +1,3 @@
-
 package tikape.runko.database;
 
 import java.sql.*;
@@ -9,25 +8,27 @@ import java.util.List;
 import tikape.runko.domain.Aihe;
 import tikape.runko.domain.Otsikko;
 
-public class AiheDao implements Dao<Aihe, Integer>{
+public class AiheDao implements Dao<Aihe, Integer> {
+
     private Database database;
     private Dao<Otsikko, Integer> otsikkoDao;
 
     public AiheDao(Database database) {
         this.database = database;
     }
-    
+
     //Toteutettu sort java:n puolella, jotta kopioitu koodi vähenee.
     //Varmuuden vuoksi myös select-kyselyversio kommenttina.
     public List<Aihe> aiheetAakkosissa() throws SQLException {
         List<Aihe> aiheet = new ArrayList<>();
         aiheet = this.findAll();
-        Collections.sort(aiheet, new Comparator<Aihe>(){ 
+        Collections.sort(aiheet, new Comparator<Aihe>() {
             @Override
-            public int compare(Aihe a1, Aihe a2)
-            { return a1.getNimi().compareTo(a2.getNimi()); } 
+            public int compare(Aihe a1, Aihe a2) {
+                return a1.getNimi().compareTo(a2.getNimi());
+            }
         });
-               
+
 //        Connection connection = database.getConnection();
 //        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM Aihe ORDER BY nimi;");
 //
@@ -37,17 +38,13 @@ public class AiheDao implements Dao<Aihe, Integer>{
 //            return null;
 //        }
 //
-//        while (rs.next()) {
-//            int id = rs.getInt("aihe_id");
-//            String nimi = rs.getString("nimi");
-//            String kuvaus = rs.getString("kuvaus");                                
-//            aiheet.add(new Aihe(id, nimi, kuvaus));            
+//        while (rs.next()) {                               
+//            aiheet.add(luoAiheolio(rs));            
 //        }    
 //        
 //        rs.close();
 //        stmt.close();
 //        connection.close();
-        
         return aiheet;
     }
 
@@ -63,17 +60,28 @@ public class AiheDao implements Dao<Aihe, Integer>{
             return null;
         }
 
-        Integer aiheId = rs.getInt("aihe.id");
-        String aiheNimi = rs.getString("aihe.nimi");
-        String aiheKuvaus = rs.getString("aihe.kuvaus");
-
-        Aihe a = new Aihe(aiheId, aiheNimi, aiheKuvaus);
-
         rs.close();
         stmt.close();
         connection.close();
 
+        return luoAiheolio(rs);
+    }
+
+    private Aihe luoAiheolio(ResultSet rs) throws SQLException {
+        Integer aiheId = rs.getInt("aihe.id");
+        String aiheNimi = rs.getString("aihe.nimi");
+        String aiheKuvaus = rs.getString("aihe.kuvaus");
+        Aihe a = new Aihe(aiheId, aiheNimi, aiheKuvaus);
         return a;
+    }
+
+    public void luoUusiAihe(String nimi, String kuvaus) throws Exception {
+        try (Connection conn = this.database.getConnection()) {
+            Statement stmt = conn.createStatement();
+            stmt.execute("INSERT INTO Aihe(nimi, kuvaus)"
+                    + "VALUES ('" + nimi + "', '" + kuvaus + "')");
+        }
+
     }
 
     @Override
@@ -90,19 +98,14 @@ public class AiheDao implements Dao<Aihe, Integer>{
         List<Aihe> aiheet = new ArrayList<>();
 
         while (rs.next()) {
-            int id = rs.getInt("aihe_id");
-            String nimi = rs.getString("nimi");
-            String kuvaus = rs.getString("kuvaus");
-                                
-            aiheet.add(new Aihe(id, nimi, kuvaus));
-            
+            aiheet.add(luoAiheolio(rs));
+
         }
-        
-        
+
         rs.close();
         stmt.close();
         connection.close();
-        
+
         return aiheet;
     }
 
@@ -114,15 +117,5 @@ public class AiheDao implements Dao<Aihe, Integer>{
         stmt.execute("DELETE FROM Aihe WHERE aihe_id = " + id + "");
         conn.close();
     }
-    
-    
-    public void luoUusiAihe(String nimi, String kuvaus) throws Exception {
-        try (Connection conn = this.database.getConnection()) {
-            Statement stmt = conn.createStatement();
-            stmt.execute("INSERT INTO Aihe(nimi, kuvaus)"
-                    + "VALUES ('" + nimi + "', '" + kuvaus + "')");
-        }
- 
-    }
-    
+
 }
