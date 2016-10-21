@@ -1,0 +1,52 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+    <head>Alalaude-forum</title>
+        <meta charset="utf-8" />
+    </head><br/><br/>
+    
+    <nav>
+         <span th:text="${index.kotivisivulle}">Kotisivu</span> <a th:href="${'/index/'}">linkki</a>
+          <span th:text="${aihe.aiheisiin}">Aihe</span> <a th:href="${'/aihe/' + aihe.id}">linkki</a>
+    </nav>
+
+    <body>
+        
+        <section>
+               <h2>Etsi</h2>
+            <form action="">
+                <input type="checkbox" name="aihe" value="Aihe">Aiheet
+                <input type="checkbox" name="otsikko" value="Otsikko">Otsikot
+                <!--<input type="checkbox" name="nick" value="Nick">Nicks-->   
+                    
+            </form>
+        </section>
+        
+        
+        <article>
+             <h2>Suosituimmat aiheet TOP5</h2>
+            <!-- tähän tulee TOP 5 aiheet, kunhan SELECTit on DAOssa-->
+            <ol>
+            <li th:each="aihe: ${aiheet5}">
+                <span th:text="${aihe.aiheNimi}">Aiheet</span> <a th:href="${'/aihe/' + aihe.nimi}">linkki</a>
+                                
+                
+            </li>
+        </ol>
+            
+        </article>
+        
+        <aside>
+              <h2>Uusimmat viestiketjut TOP10</h2>
+               <ol>
+            <li th:each="aihe: ${viestit10}">
+                <span th:text="${viesti.Otsikko}">Viestiketjut</span> <a th:href="${'/viesti/' + viesti.otsikko}">linkki</a>
+                                
+                
+            </li>
+        </ol>
+            
+        </aside>
+    
+    </body>
+</html>
