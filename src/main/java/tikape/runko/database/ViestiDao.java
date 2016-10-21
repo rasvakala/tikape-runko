@@ -15,13 +15,14 @@ public class ViestiDao implements Dao<Viesti, Integer>{
         this.database = database;
         this.otsikko = otsikko;
     }
+    
 
     
     //metodi sanojen ja nimimerkin perusteella etsimiseen -sanat esim. listan avulla
     
-    public Timestamp alueenViimeisinViesti() throws SQLException {
+    public Viesti otsikonViimeisinViesti(int otsikko_id) throws SQLException {
         Connection connection = database.getConnection();
-        PreparedStatement stmt = connection.prepareStatement("SELECT aika FROM Viesti WHERE otsikko =  " + otsikko.getId + " ORDER BY aika DESC LIMIT 1;");
+        PreparedStatement stmt = connection.prepareStatement("SELECT aika FROM Viesti WHERE otsikko =  " + otsikko_id + " ORDER BY aika DESC LIMIT 1;");
         stmt.setObject(1, otsikko.getId);
         
          ResultSet rs = stmt.executeQuery();
@@ -32,9 +33,13 @@ public class ViestiDao implements Dao<Viesti, Integer>{
         
         Timestamp aikaleima = rs.getTimestamp("aika"); //Timestamp muuttujatyyppi! Tarkista!
         
+        //Alusta tähän muuttujat!
+        
+        Viesti v = new Viesti;
+        
         stmt.close();
         connection.close();
-        return aikaleima;
+        return v;
     }
     
     //Luo uuden Viestin. Aikaleima ja otsikko_id on jätetty automaattisiksi.

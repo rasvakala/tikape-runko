@@ -4,7 +4,9 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import tikape.runko.domain.Aihe;
 import tikape.runko.domain.Otsikko;
 import tikape.runko.domain.Viesti;
@@ -19,6 +21,34 @@ public class OtsikkoDao implements Dao<Otsikko, Integer> {
         this.database = database;
         this.aihe = aihe;
         this.viestiDao = viesti;
+    }
+    
+    //Hakee kaikkien aiheiden otsikot, joissa viimeisimmät viestit.
+    public List<Otsikko> tuoreimmatOtsikot() throws SQLException {
+//        Connection connection = database.getConnection();
+//        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM Otsikko ORDER BY ;");
+        
+        List<Otsikko> otsikot = this.findAll();
+        List<Viesti> vikatViestit = new ArrayList<>();
+        Map<Integer, Otsikko> otsikkoMap = new HashMap<>();
+               
+        for (Otsikko otsikko : otsikot){
+            otsikkoMap.put(otsikko.getId(), otsikko);
+           //this.viestiDao.otsikonViimeisinViesti(otsikko.getId()); //Miksi tässä on virhe?
+           vikatViestit.add(this.viestiDao.otsikonViimeisinViesti(otsikko.getId()));
+        }
+        
+        Collections.sort(vikatViestit, new Comparator<Viesti>(){ 
+            @Override
+            public int compare(Viesti v1, Viesti v2)
+            { return v1.getAika().compareTo(v2.getAika()); } 
+        });
+        
+        for (Viesti viesti: vikatViestit) {
+            //TODO
+        }
+        return otsikot;
+        
     }
 
 
@@ -126,7 +156,33 @@ public class OtsikkoDao implements Dao<Otsikko, Integer> {
     @Override
     public List<Otsikko> findAll() throws SQLException {
         //ei toteutettu
-        return null;
+        List<Otsikko> otsikot = new ArrayList<>();
+        Connection connection = database.getConnection();
+        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM Otsikko;");
+        //stmt.setObject(1, id);
+
+        ResultSet rs = stmt.executeQuery();
+        boolean hasOne = rs.next();
+        if (!hasOne) {
+            return null;
+        }
+
+        while (rs.next()) {
+            //otsikon muuttujat tähän
+            int oid = rs.getInt("otsikko_id");
+            String oTeksti = rs.getString("otsikkoteksti");
+            String nimiM = rs.getString("nimimerkki");
+            String teksti = rs.getString("teksti");
+            String aloitettu = rs.getString("keskustelu_aloitettu");
+            Integer aiheId = rs.getInt("aihe");
+            otsikot.add(new Otsikko(oid, oTeksti, nimiM, teksti, aloitettu, aiheId));
+        }
+
+        rs.close();
+        stmt.close();
+        connection.close();
+
+        return otsikot;
     }
 
     @Override
