@@ -51,7 +51,7 @@ public class AiheDao implements Dao<Aihe, Integer> {
     @Override
     public Aihe findOne(Integer id) throws SQLException {
         Connection connection = database.getConnection();
-        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM Aihe WHERE id = " + id + ";");
+        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM Aihe WHERE aihe_id = ?;");
         stmt.setObject(1, id);
 
         ResultSet rs = stmt.executeQuery();
@@ -59,18 +59,18 @@ public class AiheDao implements Dao<Aihe, Integer> {
         if (!hasOne) {
             return null;
         }
-
+        Aihe aihe = luoAiheolio(rs); // ennen sulkemista
         rs.close();
         stmt.close();
         connection.close();
 
-        return luoAiheolio(rs);
+        return aihe;
     }
 
     private Aihe luoAiheolio(ResultSet rs) throws SQLException {
-        Integer aiheId = rs.getInt("aihe.id");
-        String aiheNimi = rs.getString("aihe.nimi");
-        String aiheKuvaus = rs.getString("aihe.kuvaus");
+        Integer aiheId = rs.getInt("aihe_id");
+        String aiheNimi = rs.getString("nimi");
+        String aiheKuvaus = rs.getString("kuvaus");
         Aihe a = new Aihe(aiheId, aiheNimi, aiheKuvaus);
         return a;
     }

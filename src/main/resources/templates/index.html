@@ -1,13 +1,14 @@
 <!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 
-    <head>Alalaude-forum</title>
+    <head><title>Alalaude-forum</title>
         <meta charset="utf-8" />
     </head><br/><br/>
     
     <nav>
-         <span th:text="${index.kotivisivulle}">Kotisivu</span> <a th:href="${'/index/'}">linkki</a>
+<!--         <span th:text="${index.kotivisivulle}">Kotisivu</span> <a th:href="${'/index/'}">linkki</a>
           <span th:text="${aihe.aiheisiin}">Aihe</span> <a th:href="${'/aihe/' + aihe.id}">linkki</a>
+-->
     </nav>
 
     <body>
@@ -15,8 +16,8 @@
         <section>
                <h2>Etsi</h2>
             <form action="">
-                <input type="checkbox" name="aihe" value="Aihe">Aiheet
-                <input type="checkbox" name="otsikko" value="Otsikko">Otsikot
+                <input type="checkbox" name="aihe" value="Aihe" />Aiheet
+                <input type="checkbox" name="otsikko" value="Otsikko" />Otsikot
                 <!--<input type="checkbox" name="nick" value="Nick">Nicks-->   
                     
             </form>

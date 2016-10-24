@@ -1,18 +1,18 @@
 package tikape.runko;
 
 //import java.sql.*;
-//import java.util.HashMap;
-//import spark.ModelAndView;
-//import static spark.Spark.*;
-//import spark.template.thymeleaf.ThymeleafTemplateEngine;
+import java.util.HashMap;
+import spark.ModelAndView;
+import static spark.Spark.*;
+import spark.template.thymeleaf.ThymeleafTemplateEngine;
 import tikape.runko.database.AiheDao;
 import tikape.runko.database.Database;
 import tikape.runko.database.OtsikkoDao;
 import tikape.runko.database.ViestiDao;
 import tikape.runko.domain.Aihe;
 import tikape.runko.domain.Otsikko;
-//import tikape.runko.database.Database;
-//import tikape.runko.database.AlalaudeDao;
+import tikape.runko.database.Database;
+import tikape.runko.database.AlalaudeDao;
 
 public class Main {
     //TODO: Timestampit Stringeiks (for now)
@@ -41,20 +41,33 @@ public class Main {
         
         //otsikkoDao.delete(3);
 
-//        get("/", (req, res) -> {
-//            HashMap map = new HashMap<>();
-//            map.put("viesti", "tervehdys");
-//
-//            return new ModelAndView(map, "index");
-//        }, new ThymeleafTemplateEngine());
-//
+        get("/", (req, res) -> {
+            HashMap map = new HashMap<>();
+            map.put("viesti", "tervehdys");
+            // aseta aiheet5, viestit 10 yms
+            return new ModelAndView(map, "index");
+        }, new ThymeleafTemplateEngine());
+
 //Tää on hyvä tässä ja lisäksi voisi laittaa vielä pari muuta, esim. otsikot
-//        get("/aiheet", (req, res) -> {
-//            HashMap map = new HashMap<>();
-//           map.put("aiheet", aiheDao.findAll());
-//
-//            return new ModelAndView(map, "aiheet");
-//        }, new ThymeleafTemplateEngine());
+        get("/aiheet", (req, res) -> {
+            HashMap map = new HashMap<>();
+            map.put("aiheet", aiheDao.findAll());
+
+            return new ModelAndView(map, "hakuTulosAiheet");
+        }, new ThymeleafTemplateEngine());
+        get("/aiheet/:id", (req, res) -> {
+            HashMap map = new HashMap<>();
+            map.put("aihe", aiheDao.findOne(Integer.parseInt(req.params("id"))));
+
+            return new ModelAndView(map, "aihe");
+        }, new ThymeleafTemplateEngine());
+        post("/aiheet", (req, res) -> {
+            String nimi = req.queryParams("aiheNimi");
+            String kuvaus = req.queryParams("aiheKuvaus");
+            System.out.println("Vastaanotettiin " + nimi);
+            aiheDao.luoUusiAihe(nimi, kuvaus);
+            return "Kerrotaan siitä tiedon lähettäjälle: " + nimi;
+        });
 //Tähän asti
 //
 //        get("/opiskelijat/:id", (req, res) -> {
