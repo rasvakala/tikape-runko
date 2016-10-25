@@ -78,6 +78,87 @@ public class OtsikkoDao implements Dao<Otsikko, Integer> {
         return aiheenOtsikot;
     }
 
+    public List<Otsikko> tuoreimmatVastatutOtsikot() throws SQLException {
+
+        List<Otsikko> tuoreimmat = new ArrayList<>();
+        List<Integer> otsikko_idit = viestiDao.viimeisimmatOtsikkoIdt();
+
+        for (Integer integer : otsikko_idit) {
+            tuoreimmat.add(findOne(integer));
+        }
+        return tuoreimmat;
+    }
+
+    public int aiheenOtsikonViestilkm(Integer id) throws SQLException {
+        List<Otsikko> otsikkoLista = this.aiheenOtsikot(id);
+        int lkm = 0;
+        for (Otsikko otsikko : otsikkoLista) {
+            lkm += viestiDao.laskeOtsikonViestit(otsikko.getId());
+        }
+        return lkm;
+    }
+
+    public List<Otsikko> OtsikonJaEkanViestinSanahaku(List<String> sanaLista) throws SQLException {
+        //muokataan lista SQL-kyselymuotoon
+        StringBuilder kysely = new StringBuilder();
+        for (int i = 0; i < sanaLista.size(); i++) {
+            kysely.append("'%");
+            kysely.append(sanaLista.get(i));
+            kysely.append("%'");
+
+            if (i < sanaLista.size() - 1) {
+                kysely.append(" OR ");
+            }
+        }
+
+        Connection connection = database.getConnection();
+        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM Otsikko WHERE otsikkoteksti LIKE ? OR teksti LIKE ?;");
+        stmt.setObject(1, kysely.toString());
+        stmt.setObject(2, kysely.toString());
+
+        ResultSet rs = stmt.executeQuery();
+        List<Otsikko> tulokset = new ArrayList<>();
+
+        boolean hasOne = rs.next();
+        if (!hasOne) {
+            return tulokset;
+        }
+
+        while (rs.next()) {
+            tulokset.add(this.luoOtsikkoOlio(rs));
+        }
+
+        rs.close();
+        stmt.close();
+        connection.close();
+        return tulokset;
+    }
+
+    public List<Otsikko> OtsikonJaEkanViestinFraasihaku(String sanat) throws SQLException {
+        //Jos tulee ongelmia, tsekkaa kyselyn välilyönni @ '%?%'        
+        Connection connection = database.getConnection();
+        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM Otsikko WHERE otsikkoteksti LIKE '%?%' OR teksti LIKE '%?%';");
+        stmt.setObject(1, sanat);
+        stmt.setObject(2, sanat);
+
+        ResultSet rs = stmt.executeQuery();
+        List<Otsikko> tulokset = new ArrayList<>();
+
+        boolean hasOne = rs.next();
+        if (!hasOne) {
+            return tulokset;
+        }
+
+        while (rs.next()) {
+            tulokset.add(this.luoOtsikkoOlio(rs));
+        }
+
+        rs.close();
+        stmt.close();
+        connection.close();
+        return tulokset;
+    }
+
     //Luo uuden Otsikon. Aikaleima ja otsikko_id on jätetty automaattisiksi.
     //Toimii!
     public void luoUusiOtsikko(String otsikkoteksti, String nimimerkki, String teksti, int aihe_id) throws Exception {
@@ -100,6 +181,12 @@ public class OtsikkoDao implements Dao<Otsikko, Integer> {
         });
         return otsikot;
     }
+    
+        public List<Otsikko> otsikotNurinAakkosissa(int aihe_id) throws SQLException {
+        List<Otsikko> otsikot = otsikotAakkosissa(aihe_id);
+        Collections.reverse(otsikot);
+        return otsikot;
+    }
 
     //Tämä saattaa antaa vanhimmat otsikot ensin. Testaa!
     public List<Otsikko> uusimmatOtsikot(int aihe_id) throws SQLException {
@@ -114,6 +201,13 @@ public class OtsikkoDao implements Dao<Otsikko, Integer> {
         return otsikot;
     }
 
+        //Tämä saattaa antaa vanhimmat otsikot ensin. Testaa!
+    public List<Otsikko> vanhimmatOtsikot(int aihe_id) throws SQLException {
+        List<Otsikko> otsikot = uusimmatOtsikot(aihe_id);        
+        Collections.reverse(otsikot);
+        return otsikot;
+    }
+    
     private Otsikko luoOtsikkoOlio(ResultSet rs) throws SQLException {
         Integer otsikkoId = rs.getInt("otsikko_id");
         String oTeksti = rs.getString("otsikkoteksti");
@@ -175,7 +269,9 @@ public class OtsikkoDao implements Dao<Otsikko, Integer> {
         Connection conn = this.database.getConnection();
         Statement stmt = conn.createStatement();
         stmt.execute("DELETE FROM Otsikko WHERE otsikko_id = " + id + "");
+
         conn.close();
+        stmt.close();
     }
 
 }

@@ -18,7 +18,7 @@ public class Main {
     //TODO: Timestampit Stringeiks (for now)
     public static void main(String[] args) throws Exception {
         Database database = new Database("jdbc:sqlite:alalaude.db");
-        database.init();
+//        database.init();
         
         Aihe aihe = new Aihe(1, "nimi", "kuvaus");
         Otsikko otsikko = new Otsikko(1, null, "nimiM", "teksti", null, 2);
