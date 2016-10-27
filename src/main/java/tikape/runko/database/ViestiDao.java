@@ -27,16 +27,14 @@ public class ViestiDao implements Dao<Viesti, Integer> {
         if (!hasOne) {
             return null;
         }
-        
+
         List<Viesti> viestit = new ArrayList<>();
-        
+
         while (rs.next()) {
             viestit.add(luoViestiolio(rs));
         }
-        
-        rs.close();
-        stmt.close();
-        connection.close();
+
+        closeConnections(rs, stmt, connection);
         return viestit;
     }
 
@@ -50,22 +48,20 @@ public class ViestiDao implements Dao<Viesti, Integer> {
         if (!hasOne) {
             return null;
         }
-        
+
         List<Viesti> viestit = new ArrayList<>();
-        
+
         while (rs.next()) {
             viestit.add(luoViestiolio(rs));
         }
-        
-        rs.close();
-        stmt.close();
-        connection.close();
+
+        closeConnections(rs, stmt, connection);
         return viestit;
     }
-    
+
     public Viesti otsikonViimeisinViesti(int otsikko_id) throws SQLException {
         Connection connection = database.getConnection();
-        PreparedStatement stmt = connection.prepareStatement("SELECT aika FROM Viesti WHERE otsikko =  " + otsikko_id + " ORDER BY aika DESC LIMIT 1;");
+        PreparedStatement stmt = connection.prepareStatement("SELECT aika FROM Viesti WHERE otsikko =  ? ORDER BY aika DESC LIMIT 1;");
         stmt.setObject(1, otsikko_id);
 
         ResultSet rs = stmt.executeQuery();
@@ -73,11 +69,8 @@ public class ViestiDao implements Dao<Viesti, Integer> {
         if (!hasOne) {
             return null;
         }
-        //Timestamp muuttujatyyppi! Tarkista!
 
-        rs.close();
-        stmt.close();
-        connection.close();
+        closeConnections(rs, stmt, connection);
         return luoViestiolio(rs);
     }
 
@@ -96,9 +89,7 @@ public class ViestiDao implements Dao<Viesti, Integer> {
             idt.add(rs.getInt("otsikko"));
         }
 
-        rs.close();
-        stmt.close();
-        connection.close();
+        closeConnections(rs, stmt, connection);
         return idt;
     }
 
@@ -115,29 +106,17 @@ public class ViestiDao implements Dao<Viesti, Integer> {
 
         int maara = rs.getInt("lkm");
 
-        rs.close();
-        stmt.close();
-        connection.close();
+        closeConnections(rs, stmt, connection);
         return maara;
     }
 
-    public List<Viesti> viestienSanahaku(List<String> sanaLista) throws SQLException {
-        //muokataan lista SQL-kyselymuotoon
-        StringBuilder kysely = new StringBuilder();
-        for (int i = 0; i < sanaLista.size(); i++) {
-            kysely.append("'%");
-            kysely.append(sanaLista.get(i));
-            kysely.append("%'");
-            
-            if (i < sanaLista.size()-1) {
-                 kysely.append(" OR ");
-            }
-        }
-        
+    public List<Viesti> viestienSanahaku(String merkkijono) throws SQLException {
+        //yksittäisiä sanoja varten käytä main-luokan sanalistaKyselymuotoon-metodia, muuten toimii fraasihakuna!
+
         Connection connection = database.getConnection();
-        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM Viesti WHERE teksti LIKE ? ;");
-        stmt.setObject(1, kysely.toString());
-        
+        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM Viesti WHERE teksti LIKE '%?%';");
+        stmt.setObject(1, merkkijono);
+
         ResultSet rs = stmt.executeQuery();
         List<Viesti> tulokset = new ArrayList<>();
 
@@ -150,44 +129,22 @@ public class ViestiDao implements Dao<Viesti, Integer> {
             tulokset.add(this.luoViestiolio(rs));
         }
 
-        rs.close();
-        stmt.close();
-        connection.close();
+        closeConnections(rs, stmt, connection);
         return tulokset;
     }
-    
-    public List<Viesti> viestienFraasihaku(String sanat) throws SQLException {        
-        //Jos tulee ongelmia, tsekkaa kyselyn välilyönni @ '%?%'
-        Connection connection = database.getConnection();
-        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM Viesti WHERE teksti LIKE '%?%' ;");
-        stmt.setObject(1, sanat);
-        
-        ResultSet rs = stmt.executeQuery();
-        List<Viesti> tulokset = new ArrayList<>();
 
-        boolean hasOne = rs.next();
-        if (!hasOne) {
-            return tulokset;
-        }
-
-        while (rs.next()) {
-            tulokset.add(this.luoViestiolio(rs));
-        }
-
-        rs.close();
-        stmt.close();
-        connection.close();
-        return tulokset;
-    }
-    
     //Luo uuden Viestin. Aikaleima ja otsikko_id on jätetty automaattisiksi.
     //
     //Toimii!
     public void luoUusiViesti(String nimimerkki, String viesti, int otsikko_id) throws Exception {
         try (Connection conn = this.database.getConnection()) {
-            Statement stmt = conn.createStatement();
-            stmt.execute("INSERT INTO Viesti(nimimerkki, viesti, otsikko) "
-                    + "VALUES ('" + nimimerkki + "', '" + viesti + "'," + otsikko_id + ")");
+            PreparedStatement stmt = conn.prepareStatement("INSERT INTO Viesti(nimimerkki, viesti, otsikko) VALUES ('?', '?', ?)");
+            stmt.setObject(1, nimimerkki);
+            stmt.setObject(2, viesti);
+            stmt.setObject(3, otsikko_id);
+            stmt.execute();
+            stmt.close();
+            conn.close();
         }
 
     }
@@ -196,7 +153,7 @@ public class ViestiDao implements Dao<Viesti, Integer> {
         Integer viestiId = rs.getInt("viesti_id");
         String nimiM = rs.getString("nimimerkki");
         String viesti = rs.getString("viesti");
-        Timestamp aika = rs.getTimestamp("aika");
+        Timestamp aika = rs.getTimestamp("aika");//Timestamp muuttujatyyppi ongelmallinen? Tarkista!
         Integer otsikkoId = rs.getInt("otsikko");
 
         return new Viesti(viestiId, nimiM, viesti, aika, otsikkoId);
@@ -214,9 +171,7 @@ public class ViestiDao implements Dao<Viesti, Integer> {
             return null;
         }
 
-        rs.close();
-        stmt.close();
-        connection.close();
+        closeConnections(rs, stmt, connection);
 
         return luoViestiolio(rs);
     }
@@ -237,20 +192,25 @@ public class ViestiDao implements Dao<Viesti, Integer> {
             viestit.add(luoViestiolio(rs));
         }
 
-        rs.close();
-        stmt.close();
-        connection.close();
+        closeConnections(rs, stmt, connection);
 
         return viestit;
     }
 
     @Override
     public void delete(Integer id) throws SQLException {
-        // Toimii!.
+        // Toimii!
         Connection conn = this.database.getConnection();
-        Statement stmt = conn.createStatement();
-        stmt.execute("DELETE FROM Viesti WHERE viesti_id = " + id + "");
+        PreparedStatement stmt = conn.prepareStatement("DELETE FROM Viesti WHERE viesti_id = ?");
+        stmt.setObject(1, id);
+        stmt.execute();
+        stmt.close();
         conn.close();
     }
 
+    private void closeConnections(ResultSet rs, PreparedStatement stmt, Connection connection) throws SQLException {
+        rs.close();
+        stmt.close();
+        connection.close();
+    }
 }

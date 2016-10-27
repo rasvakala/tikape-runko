@@ -29,31 +29,29 @@ public class AiheDao implements Dao<Aihe, Integer> {
                 return a1.getNimi().compareTo(a2.getNimi());
             }
         });
-
-//        Connection connection = database.getConnection();
-//        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM Aihe ORDER BY nimi;");
-//
-//        ResultSet rs = stmt.executeQuery();
-//        boolean hasOne = rs.next();
-//        if (!hasOne) {
-//            return null;
-//        }
-//
-//        while (rs.next()) {                               
-//            aiheet.add(luoAiheolio(rs));            
-//        }    
-//        
-//        rs.close();
-//        stmt.close();
-//        connection.close();
         return aiheet;
     }
-    
+
+    /*        Connection connection = database.getConnection();
+     PreparedStatement stmt = connection.prepareStatement("SELECT * FROM Aihe ORDER BY nimi;");
+
+     ResultSet rs = stmt.executeQuery();
+     boolean hasOne = rs.next();
+     if (!hasOne) {
+     return null;
+     }
+
+     while (rs.next()) {                               
+     aiheet.add(luoAiheolio(rs));            
+     }    
+        
+     closeConnections(rs, stmt, connection); 
+     */
     public List<Aihe> aiheetNurinAakkosissa() throws SQLException {
         List<Aihe> aiheet = aiheetAakkosissa();
         Collections.reverse(aiheet);
         return aiheet;
-    }    
+    }
 
     //palauttaa kaikki aiheet suosituimmuusjärjestyksessä viestien lukumäärän perusteella
     public List<Aihe> suosituimmatAiheet() throws SQLException {
@@ -89,60 +87,23 @@ public class AiheDao implements Dao<Aihe, Integer> {
             aiheet.add(aiheMap.get(avain));
         }
 
-        rs.close();
-        stmt.close();
-        connection.close();
+        closeConnections(rs, stmt, connection);
         return aiheet;
     }
-    
-    public List<Aihe> epasuosituimmatAiheet() throws SQLException{
+
+    public List<Aihe> epasuosituimmatAiheet() throws SQLException {
         List<Aihe> aiheet = suosituimmatAiheet();
         Collections.reverse(aiheet);
         return aiheet;
     }
 
-    public List<Aihe> aiheenOtsikonJaKuvauksenSanahaku(List<String> sanaLista) throws SQLException {
-        //muokataan lista SQL-kyselymuotoon
-        StringBuilder kysely = new StringBuilder();
-        for (int i = 0; i < sanaLista.size(); i++) {
-            kysely.append("'%");
-            kysely.append(sanaLista.get(i));
-            kysely.append("%'");
+    public List<Aihe> aiheenOtsikonJaKuvauksenSanahaku(String merkkijono) throws SQLException {
+        //yksittäisiä sanoja varten käytä main-luokan sanalistaKyselymuotoon-metodia, muuten toimii fraasihakuna!
 
-            if (i < sanaLista.size() - 1) {
-                kysely.append(" OR ");
-            }
-        }
-
-        Connection connection = database.getConnection();
-        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM Aihe WHERE nimi LIKE ? OR kuvaus LIKE ?;");
-        stmt.setObject(1, kysely.toString());
-        stmt.setObject(2, kysely.toString());
-
-        ResultSet rs = stmt.executeQuery();
-        List<Aihe> tulokset = new ArrayList<>();
-
-        boolean hasOne = rs.next();
-        if (!hasOne) {
-            return tulokset;
-        }
-
-        while (rs.next()) {
-            tulokset.add(this.luoAiheolio(rs));
-        }
-
-        rs.close();
-        stmt.close();
-        connection.close();
-        return tulokset;
-    }
-
-    public List<Aihe> aiheenOtsikonJaKuvauksenFraasihaku(String sanat) throws SQLException {
-        
         Connection connection = database.getConnection();
         PreparedStatement stmt = connection.prepareStatement("SELECT * FROM Aihe WHERE nimi LIKE '%?%' OR kuvaus LIKE '%?%';");
-        stmt.setObject(1, sanat);
-        stmt.setObject(2, sanat);
+        stmt.setObject(1, merkkijono);
+        stmt.setObject(2, merkkijono);
 
         ResultSet rs = stmt.executeQuery();
         List<Aihe> tulokset = new ArrayList<>();
@@ -156,9 +117,7 @@ public class AiheDao implements Dao<Aihe, Integer> {
             tulokset.add(this.luoAiheolio(rs));
         }
 
-        rs.close();
-        stmt.close();
-        connection.close();
+        closeConnections(rs, stmt, connection);
         return tulokset;
     }
 
@@ -166,17 +125,18 @@ public class AiheDao implements Dao<Aihe, Integer> {
         Integer aiheId = rs.getInt("aihe_id");
         String aiheNimi = rs.getString("nimi");
         String aiheKuvaus = rs.getString("kuvaus");
-        Aihe a = new Aihe(aiheId, aiheNimi, aiheKuvaus);
-        return a;
+        return new Aihe(aiheId, aiheNimi, aiheKuvaus);
     }
 
     public void luoUusiAihe(String nimi, String kuvaus) throws Exception {
         try (Connection conn = this.database.getConnection()) {
-            Statement stmt = conn.createStatement();
-            stmt.execute("INSERT INTO Aihe(nimi, kuvaus)"
-                    + "VALUES ('" + nimi + "', '" + kuvaus + "')");
+            PreparedStatement stmt = conn.prepareStatement("INSERT INTO Aihe(nimi, kuvaus) VALUES ('?', '?')");
+            stmt.setObject(1, nimi);
+            stmt.setObject(2, kuvaus);
+            stmt.execute();
+            stmt.close();
+            conn.close();
         }
-
     }
 
     @Override
@@ -191,9 +151,7 @@ public class AiheDao implements Dao<Aihe, Integer> {
             return null;
         }
         Aihe aihe = luoAiheolio(rs); // ennen sulkemista
-        rs.close();
-        stmt.close();
-        connection.close();
+        closeConnections(rs, stmt, connection);
 
         return aihe;
     }
@@ -213,23 +171,27 @@ public class AiheDao implements Dao<Aihe, Integer> {
 
         while (rs.next()) {
             aiheet.add(luoAiheolio(rs));
-
         }
 
-        rs.close();
-        stmt.close();
-        connection.close();
+        closeConnections(rs, stmt, connection);
 
         return aiheet;
     }
 
     @Override
     public void delete(Integer id) throws SQLException {
-        // Toimii!.
+        // Toimii!
         Connection conn = this.database.getConnection();
-        Statement stmt = conn.createStatement();
-        stmt.execute("DELETE FROM Aihe WHERE aihe_id = " + id + "");
+        PreparedStatement stmt = conn.prepareStatement("DELETE FROM Aihe WHERE aihe_id = ?");
+        stmt.setObject(1, id);
+        stmt.execute();
+        stmt.close();
         conn.close();
     }
 
+    private void closeConnections(ResultSet rs, PreparedStatement stmt, Connection connection) throws SQLException {
+        rs.close();
+        stmt.close();
+        connection.close();
+    }
 }
