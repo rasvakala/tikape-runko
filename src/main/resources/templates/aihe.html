@@ -9,19 +9,19 @@
     <body>
         <h1><span th:text="${aihe.nimi}">aiheen nimi</span></h1>
         <span th:text="${aihe.kuvaus}">aiheen kuvaus</span>
-        
+
         <h1>Luo keskustelun aihe </h1>
 
         <!--tämän jälkeen olen lisännyt 14.10.2016-->
 
         <form action="/aiheet" method="POST" id="form1">
             Aihe: <br/> <input type="text" name="aiheNimi" size="60"/> 
-            
+
             <br/>  <br/>
             Aiheen kuvaus: <input type="text" name="aiheKuvaus" size="120"/>
             <button type="submit" form="form1" value="Lisää">Lisää</button> 
             <!-- tähän asti-->
         </form>
-        
+
     </body>
 </html>

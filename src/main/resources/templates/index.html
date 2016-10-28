@@ -4,50 +4,54 @@
     <head><title>Alalaude-forum</title>
         <meta charset="utf-8" />
     </head><br/><br/>
-    
+
     <nav>
-<!--         <span th:text="${index.kotivisivulle}">Kotisivu</span> <a th:href="${'/index/'}">linkki</a>
-          <span th:text="${aihe.aiheisiin}">Aihe</span> <a th:href="${'/aihe/' + aihe.id}">linkki</a>
--->
+        <!--         <span th:text="${index.kotivisivulle}">Kotisivu</span> <a th:href="${'/index/'}">linkki</a>
+                  <span th:text="${aihe.aiheisiin}">Aihe</span> <a th:href="${'/aihe/' + aihe.id}">linkki</a>
+        -->
     </nav>
 
-    <body>
-        
+    <body  bgcolor="#8FB481">
         <section>
-               <h2>Etsi</h2>
-            <form action="">
-                <input type="checkbox" name="aihe" value="Aihe" />Aiheet
-                <input type="checkbox" name="otsikko" value="Otsikko" />Otsikot
-                <!--<input type="checkbox" name="nick" value="Nick">Nicks-->   
-                    
+            <h2>HAKUKENT&Auml;T</h2>
+            <form action="/" method="GET" id="form1">
+                Otsikkohaku: <input type="text" name="oTeksti" size="60"/> 
+
+                <button type="submit" form="form1" value="Submit">Hae</button>  <br/>     <br/>     
+
+                Aihehaku: <input type="text" name="aihe" size="60"/> 
+
+                <button type="submit" form="form1" value="Submit">Hae</button>    <br/>   
+
             </form>
+            <!--<input type="checkbox" name="nick" value="Nick">Nicks-->   
         </section>
-        
-        
+
+
         <article>
-             <h2>Suosituimmat aiheet TOP5</h2>
+            <h2>Suosituimmat aiheet TOP5</h2>
             <!-- tähän tulee TOP 5 aiheet, kunhan SELECTit on DAOssa-->
             <ol>
-            <li th:each="aihe: ${aiheet5}">
-                <span th:text="${aihe.aiheNimi}">Aiheet</span> <a th:href="${'/aihe/' + aihe.nimi}">linkki</a>
-                                
-                
-            </li>
-        </ol>
-            
+                <li th:each="aihe: ${aiheet5}">
+                    <span th:text="${aihe.nimi}">Aiheet</span> <a th:href="${'/aihe/' + aihe.id}">linkki</a>
+
+
+                </li>
+            </ol>
+
         </article>
-        
+
         <aside>
-              <h2>Uusimmat viestiketjut TOP10</h2>
-               <ol>
-            <li th:each="aihe: ${viestit10}">
-                <span th:text="${viesti.Otsikko}">Viestiketjut</span> <a th:href="${'/viesti/' + viesti.otsikko}">linkki</a>
-                                
-                
-            </li>
-        </ol>
-            
+            <h2>Uusimmat viestiketjut TOP10</h2>
+            <ol>
+                <li th:each="aihe: ${viestit10}">
+                    <span th:text="${viesti.Otsikko}">Viestiketjut</span> <a th:href="${'/viesti/' + viesti.otsikko}">linkki</a>
+
+
+                </li>
+            </ol>
+
         </aside>
-    
+
     </body>
 </html>

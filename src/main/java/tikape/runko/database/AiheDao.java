@@ -56,7 +56,8 @@ public class AiheDao implements Dao<Aihe, Integer> {
     //palauttaa kaikki aiheet suosituimmuusjärjestyksessä viestien lukumäärän perusteella
     public List<Aihe> suosituimmatAiheet() throws SQLException {
         Connection connection = database.getConnection();
-        PreparedStatement stmt = connection.prepareStatement("SELECT aihe_id FROM Aihe;");
+        PreparedStatement stmt = connection.prepareStatement("SELECT aihe_id FROM Aihe LEFT JOIN Otsikko ON (Otsikko.aihe = Aihe.aihe_id) GROUP BY Aihe.aihe_id ORDER BY COUNT(Otsikko.otsikko_id) "
+                + "DESC LIMIT 5;");
 
         ResultSet rs = stmt.executeQuery();
         boolean hasOne = rs.next();
@@ -72,21 +73,10 @@ public class AiheDao implements Dao<Aihe, Integer> {
 
         HashMap<Integer, Aihe> aiheMap = new HashMap<>();
 
-        for (Integer aiheId : aihe_idit) {
-            Integer lkm = this.otsikkoDao.aiheenOtsikonViestilkm(aiheId);
-            aiheMap.put(lkm, findOne(aiheId));
-        }
-
-        //järjestetään avaimet
-        List<Integer> avaimet = new ArrayList<Integer>(aiheMap.keySet());
-        Collections.sort(avaimet);
-        Collections.reverse(avaimet);
-
         List<Aihe> aiheet = new ArrayList<>();
-        for (Integer avain : avaimet) {
-            aiheet.add(aiheMap.get(avain));
+        for (Integer aiheId : aihe_idit) {
+            aiheet.add(findOne(aiheId));
         }
-
         closeConnections(rs, stmt, connection);
         return aiheet;
     }

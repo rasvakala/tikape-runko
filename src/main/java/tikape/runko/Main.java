@@ -35,9 +35,9 @@ public class Main {
         //Testaa uuden aiheen luomista:
         //aiheDao.luoUusiAihe("Rupattelu", "Keskustelua laidasta laitaan");
         //otsikkoDao.delete(3);
-        get("/", (req, res) -> {
+         get("/", (req, res) -> {
             HashMap map = new HashMap<>();
-            map.put("viesti", "tervehdys");
+            map.put("aiheet5", aiheDao.suosituimmatAiheet());
             // aseta aiheet5, viestit 10 yms
             return new ModelAndView(map, "index");
         }, new ThymeleafTemplateEngine());
@@ -51,18 +51,22 @@ public class Main {
         }, new ThymeleafTemplateEngine());
         get("/aiheet/:id", (req, res) -> {
             HashMap map = new HashMap<>();
+           // vai otsikon viestit
             map.put("aihe", aiheDao.findOne(Integer.parseInt(req.params("id"))));
 
-            return new ModelAndView(map, "aihe");
+            return new ModelAndView(map, "viestiKirjoitus");
         }, new ThymeleafTemplateEngine());
+        
         post("/aiheet", (req, res) -> {
-            String nimi = req.queryParams("aiheNimi");
-            String kuvaus = req.queryParams("aiheKuvaus");
-            System.out.println("Vastaanotettiin " + nimi);
-            aiheDao.luoUusiAihe(nimi, kuvaus);
-            return "Kerrotaan siitä tiedon lähettäjälle: " + nimi;
+            String otsikkoteksti = req.queryParams("oTeksti");
+            String nimimerkki = req.queryParams("nimiM");
+            String teksti = req.queryParams("teksti");
+            System.out.println("Vastaanotettiin " + teksti);
+            otsikkoDao.luoUusiOtsikko(otsikkoteksti, nimimerkki, teksti, 0);
+            return "Kerrotaan siitä tiedon lähettäjälle: " + nimimerkki;
         });
-//Tähän asti
+
+////Tähän asti
 //
 //        get("/opiskelijat/:id", (req, res) -> {
 //            HashMap map = new HashMap<>();
