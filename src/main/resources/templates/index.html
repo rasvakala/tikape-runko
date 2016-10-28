@@ -33,7 +33,7 @@
             <!-- tähän tulee TOP 5 aiheet, kunhan SELECTit on DAOssa-->
             <ol>
                 <li th:each="aihe: ${aiheet5}">
-                    <span th:text="${aihe.nimi}">Aiheet</span> <a th:href="${'/aihe/' + aihe.id}">linkki</a>
+                    <span th:text="${aihe.nimi}">Aiheet</span> <a th:href="${'/aiheet/' + aihe.id}">linkki</a>
 
 
                 </li>

@@ -53,7 +53,6 @@ public class Main {
             HashMap map = new HashMap<>();
            // vai otsikon viestit
             map.put("aihe", aiheDao.findOne(Integer.parseInt(req.params("id"))));
-
             return new ModelAndView(map, "viestiKirjoitus");
         }, new ThymeleafTemplateEngine());
         
@@ -61,8 +60,10 @@ public class Main {
             String otsikkoteksti = req.queryParams("oTeksti");
             String nimimerkki = req.queryParams("nimiM");
             String teksti = req.queryParams("teksti");
+            int aiheid = Integer.parseInt(req.queryParams("aihe"));
             System.out.println("Vastaanotettiin " + teksti);
-            otsikkoDao.luoUusiOtsikko(otsikkoteksti, nimimerkki, teksti, 0);
+            otsikkoDao.luoUusiOtsikko(otsikkoteksti, nimimerkki, teksti, aiheid);
+            
             return "Kerrotaan siitä tiedon lähettäjälle: " + nimimerkki;
         });
 
