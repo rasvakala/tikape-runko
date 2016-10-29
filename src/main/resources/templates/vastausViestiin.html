@@ -7,22 +7,22 @@
     </head>
 
     <body>
-        <h1>Tahan ketjun</h1>
-        <!--<h2> th:text="${otsikko.otsikkoteksti}">keskusteluaihe</h2>
-        <h3> otsikko, johon vastaus</h3>-->
+        <h1>T&auml;h&auml;n ketjun</h1>
+        <h2 th:text="${otsikko.teksti}">keskusteluaihe</h2>
+        <h3> otsikko, johon vastaus</h3>
+
 
         
-                <ol>
+        <ol>
             <li th:each="viesti: ${viestit}">
-                <span th:text="${viesti.viesti}">viesti</span> <a th:href="${'/viestit/' + viesti.id}">linkki</a>
-
-
+                <span th:text="${viesti.viesti}">viesti</span>
+                <br/><i><span th:text="${viesti.nimiM}">viesti</span></i>
             </li>
         </ol>
         <!-- tähän asti lisätty 29.10.2016-->
 
         <form action="/viestit" method="POST" id="form1">
-            <input type="hidden" name="viesti" th:value="${viesti_id}"/>
+            <input type="hidden" name="otsikkoId" th:value="${otsikko.id}"/>
             <br/><br/>
             Viesti: <textarea name="Viesti" rows="10" cols="100"></textarea>
             <br/><br/>

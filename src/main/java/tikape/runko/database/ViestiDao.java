@@ -138,7 +138,7 @@ public class ViestiDao implements Dao<Viesti, Integer> {
     //Toimii!
     public void luoUusiViesti(String nimimerkki, String viesti, int otsikko_id) throws Exception {
         try (Connection conn = this.database.getConnection()) {
-            PreparedStatement stmt = conn.prepareStatement("INSERT INTO Viesti(nimimerkki, viesti, otsikko) VALUES ('?', '?', ?)");
+            PreparedStatement stmt = conn.prepareStatement("INSERT INTO Viesti(nimimerkki, viesti, otsikko) VALUES (?, ?, ?)");
             stmt.setObject(1, nimimerkki);
             stmt.setObject(2, viesti);
             stmt.setObject(3, otsikko_id);

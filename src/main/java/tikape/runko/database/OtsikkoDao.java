@@ -53,9 +53,9 @@ public class OtsikkoDao implements Dao<Otsikko, Integer> {
     }
     //uusi2
     //palauttaa kaikki aiheet suosituimmuusjärjestyksessä viestien lukumäärän perusteella
-    public List<Otsikko> top10Otsikot() throws SQLException {
+      public List<Otsikko> top10Otsikot() throws SQLException {
         Connection connection = database.getConnection();
-        PreparedStatement stmt = connection.prepareStatement("SELECT otsikko_id FROM Otsikko LEFT JOIN Viesti ON (Otsikko.otsikko_id = Viesti.otsikko) GROUP BY Otsikko.otsikko_id ORDER BY COUNT(Viesti.aika) DESC LIMIT 10;");
+        PreparedStatement stmt = connection.prepareStatement("SELECT otsikko_id FROM Otsikko LEFT JOIN Viesti ON (Otsikko.otsikko_id = Viesti.otsikko) GROUP BY Otsikko.otsikko_id ORDER BY COUNT(Viesti.aika) ASC LIMIT 10;");
         ResultSet rs = stmt.executeQuery();
         boolean hasOne = rs.next();
         if (!hasOne) {

@@ -56,7 +56,7 @@ public class Main {
         }, new ThymeleafTemplateEngine());
 
 //Tää on hyvä tässä ja lisäksi voisi laittaa vielä pari muuta, esim. otsikot
-        get("/aiheet", (req, res) -> {
+         get("/aiheet", (req, res) -> {
             HashMap map = new HashMap<>();
             map.put("aiheet", aiheDao.findAll());
 
@@ -77,7 +77,7 @@ public class Main {
             System.out.println("Vastaanotettiin " + teksti);
             otsikkoDao.luoUusiOtsikko(otsikkoteksti, nimimerkki, teksti, aiheid);
 
-            return "Uusi viesti kirjoittajalta: " + nimimerkki + "lisätty";
+            return "Uusi viesti kirjoittajalta: " + nimimerkki + " lisätty";
         });
 
         //uusi5 lisää viestit
@@ -85,18 +85,18 @@ public class Main {
             HashMap map = new HashMap<>();
             map.put("viestit", viestiDao.findAll());
 
-            return new ModelAndView(map, "vastausViestiin");
+            return new ModelAndView(map, "hakuTulosOtsikko");
         }, new ThymeleafTemplateEngine());
         get("/viestit/:id", (req, res) -> {
             HashMap map = new HashMap<>();
             // vai otsikon viestit
             map.put("viesti", viestiDao.findOne(Integer.parseInt(req.params("id"))));
-            return new ModelAndView(map, "vastausViestiin");
+            return new ModelAndView(map, "viestiOtsikkoon");
         }, new ThymeleafTemplateEngine());
 
         post("/viestit", (req, res) -> {
             String nimimerkki = req.queryParams("nimiM");
-            String viesti = req.queryParams("viesti");
+            String viesti = req.queryParams("Viesti");
             int otsikko_id = Integer.parseInt(req.queryParams("otsikkoId"));
             System.out.println("Vastaanotettiin " + viesti);
             viestiDao.luoUusiViesti(nimimerkki, viesti, otsikko_id);
@@ -104,6 +104,8 @@ public class Main {
             return "Kirjoita ketjuun: " + viesti;
             //Viesti(viestiId, nimiM, viesti, aika, otsikkoId);
         });
+            //Viesti(viestiId, nimiM, viesti, aika, otsikkoId);
+        
         //uusi5 tähän asti
 
         //uusi4 lisää aihe
@@ -130,7 +132,7 @@ public class Main {
 //        });
         //uusi4 tähän asti
 //uusi3
-        get("/otsikot", (req, res) -> {
+ get("/otsikot", (req, res) -> {
             HashMap map = new HashMap<>();
             map.put("otsikot", otsikkoDao.findAll());
 
@@ -139,9 +141,11 @@ public class Main {
         get("/otsikot/:id", (req, res) -> {
             HashMap map = new HashMap<>();
             // vai otsikon viestit
-            map.put("otsikko", otsikkoDao.findOne(Integer.parseInt(req.params("id"))));
+            int id = Integer.parseInt(req.params("id"));
+            map.put("otsikko", otsikkoDao.findOne(id));
+            map.put("viestit", viestiDao.otsikonViestit(id));
             //uusi hakuTulosOtsikot, jossa vain hakee yhden
-            return new ModelAndView(map, "hakuTulosOtsikko");
+            return new ModelAndView(map, "vastausViestiin");
         }, new ThymeleafTemplateEngine());
 
 //        post("/otsikot", (req, res) -> {
