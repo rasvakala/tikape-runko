@@ -9,15 +9,15 @@
     <body>
         <h1>Lis&auml;&auml; uusi viestiketju aiheeseen: </h1>  
         <h2 th:text="${aihe.nimi}">keskusteluaihe</h2>
+        <h3> osallistujat</h3>
 
         <!-- lisätty 29.10.2016-->
         <ol>
-            <li th:each="aihe: ${aiheet}">
-                <span th:text="${aihe.nimi}">aiheen nimi</span> <a th:href="${'/aiheet/' + aihe.id}">linkki</a>
-
-
+            <li th:each="otsikko: ${otsikot}">
+                <span th:text="${otsikko.nimiM}">otsikon nimi</span>
             </li>
         </ol>
+        
         <!-- tähän asti lisätty 29.10.2016-->
 
         <form action="/otsikot" method="POST" id="form1">

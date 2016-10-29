@@ -74,7 +74,9 @@ public class Main {
         get("/aiheet/:id", (req, res) -> {
             HashMap map = new HashMap<>();
             // vai otsikon viestit
-            map.put("aihe", aiheDao.findOne(Integer.parseInt(req.params("id"))));
+            int id = Integer.parseInt(req.params("id"));
+            map.put("aihe", aiheDao.findOne(id));
+            map.put("otsikot", otsikkoDao.aiheenOtsikot(id));
             return new ModelAndView(map, "viestiKirjoitus");
         }, new ThymeleafTemplateEngine());
 
@@ -110,7 +112,7 @@ public class Main {
             System.out.println("Vastaanotettiin " + viesti);
             viestiDao.luoUusiViesti(nimimerkki, viesti, otsikko_id);
 
-            return "Kirjoita ketjuun: " + viesti;
+            return "Lisäsit juuri viestiketjuun viestin: " + viesti;
             //Viesti(viestiId, nimiM, viesti, aika, otsikkoId);
         });
         //Viesti(viestiId, nimiM, viesti, aika, otsikkoId);
