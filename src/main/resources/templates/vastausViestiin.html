@@ -7,29 +7,29 @@
     </head>
 
     <body>
-        <h1>Tähän ketjun otsikko, johon vastaus</h1>
+        <h1>Tahan ketjun</h1>
+        <!--<h2> th:text="${otsikko.otsikkoteksti}">keskusteluaihe</h2>
+        <h3> otsikko, johon vastaus</h3>-->
 
-        <ol>
+        
+                <ol>
             <li th:each="viesti: ${viestit}">
-                <!-- <span th:text="${viesti.otsikkoId}">otsikko</span> <a th:href="${'/viestit/' + viesti.id}">linkki</a>-->
+                <span th:text="${viesti.viesti}">viesti</span> <a th:href="${'/viestit/' + viesti.id}">linkki</a>
 
 
             </li>
         </ol>
+        <!-- tähän asti lisätty 29.10.2016-->
 
-        <form action="/" method="GET" id="form1">
-
-            <!--Mainissä pitäisi olla mappays tätä varten otsikko.oTeksti-->
-
-            <span th.text="${otsikko.oTeksti">Vastaa viestiketjuun</span>
-
-            <br/> <br/><textarea name="Viesti" rows="10" cols="100"></textarea>
-            <button type="submit" form="form1" value="Submit"<br/><br/>
-                Lähetä</button> 
+        <form action="/viestit" method="POST" id="form1">
+            <input type="hidden" name="viesti" th:value="${viesti_id}"/>
+            <br/><br/>
+            Viesti: <textarea name="Viesti" rows="10" cols="100"></textarea>
+            <br/><br/>
+            Nimimerkki: <input type="text" name="nimiM" size="60"/>
+            <br/><br/>
+            <button type="submit" form="form1" value="Submit">L&auml;het&auml;</button>
         </form>
-<!-- Textarean yläp. kirjoita viesti tähän, ennen lähetä-painiketta nimimerkki -->
-        <!--<p>Vastaa <span th:text="${viesti}">jotain?</span></p>-->
 
-        <!--<p><a href="/opiskelijat">Tästä opiskelijalistaukseen.</a></p>-->
     </body>
 </html>

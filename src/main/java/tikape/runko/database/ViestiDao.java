@@ -153,7 +153,7 @@ public class ViestiDao implements Dao<Viesti, Integer> {
         Integer viestiId = rs.getInt("viesti_id");
         String nimiM = rs.getString("nimimerkki");
         String viesti = rs.getString("viesti");
-        Timestamp aika = rs.getTimestamp("aika");//Timestamp muuttujatyyppi ongelmallinen? Tarkista!
+        Timestamp aika = null; // rs.getTimestamp("aika");//Timestamp muuttujatyyppi ongelmallinen? Tarkista!
         Integer otsikkoId = rs.getInt("otsikko");
 
         return new Viesti(viestiId, nimiM, viesti, aika, otsikkoId);

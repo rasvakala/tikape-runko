@@ -7,13 +7,12 @@
     </head>
 
     <body>
-        <h1>Hakutulokset otsikot</h1>
+        <h1>Hakutulosotsikko</h1>
 
-        <ol>
-            <li th:each="otsikko: ${otsikot}">
-                <span th:text="${otsikko.teksti}">Otsikko</span> <a th:href="${'/otsikot/' + otsikko.id}">linkki</a>
+        <h2><span th:text="${otsikko.teksti}">Otsikko</span></h2>
+        <!--akuperäistä muutettu <a th:href="${'/otsikot/' + otsikko.id}">linkki</a>-->
+        <a th:href="${'/viestit'}">linkki</a>
 
-            </li>
-        </ol>
+
     </body>
 </html>

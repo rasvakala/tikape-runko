@@ -51,6 +51,31 @@ public class OtsikkoDao implements Dao<Otsikko, Integer> {
         return jarjestetytOtsikot;
 
     }
+    //uusi2
+    //palauttaa kaikki aiheet suosituimmuusjärjestyksessä viestien lukumäärän perusteella
+    public List<Otsikko> top10Otsikot() throws SQLException {
+        Connection connection = database.getConnection();
+        PreparedStatement stmt = connection.prepareStatement("SELECT otsikko_id FROM Otsikko LEFT JOIN Viesti ON (Otsikko.otsikko_id = Viesti.otsikko) GROUP BY Otsikko.otsikko_id ORDER BY COUNT(Viesti.aika) DESC LIMIT 10;");
+        ResultSet rs = stmt.executeQuery();
+        boolean hasOne = rs.next();
+        if (!hasOne) {
+            return null;
+        }
+
+        List<Integer> otsikko_idit = new ArrayList<>();
+
+        while (rs.next()) {
+            otsikko_idit.add(rs.getInt("otsikko_id"));
+        }
+
+        List<Otsikko> otsikot = new ArrayList<>();
+        for (Integer otsikkoId : otsikko_idit) {
+            otsikot.add(findOne(otsikkoId));
+        }
+        closeConnections(rs, stmt, connection);
+        return otsikot;
+    }
+    //tähän asti
 
     //metodit sanojen ja nimimerkin perusteella etsimiseen
     public List<Otsikko> aiheenOtsikot(Integer aihe_id) throws SQLException {
@@ -124,7 +149,7 @@ public class OtsikkoDao implements Dao<Otsikko, Integer> {
     //Toimii!
     public void luoUusiOtsikko(String otsikkoteksti, String nimimerkki, String teksti, int aihe_id) throws Exception {
         try (Connection conn = this.database.getConnection()) {
-            PreparedStatement stmt = conn.prepareStatement("INSERT INTO Otsikko(otsikkoteksti, nimimerkki, teksti, aihe) VALUES ('?', '?', '?', ?)");
+            PreparedStatement stmt = conn.prepareStatement("INSERT INTO Otsikko(otsikkoteksti, nimimerkki, teksti, aihe) VALUES (?, ?, ?, ?)");
             stmt.setObject(1, otsikkoteksti);
             stmt.setObject(2, nimimerkki);
             stmt.setObject(3, teksti);
@@ -186,7 +211,7 @@ public class OtsikkoDao implements Dao<Otsikko, Integer> {
     @Override
     public Otsikko findOne(Integer id) throws SQLException {
         Connection connection = database.getConnection();
-        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM Otsikko WHERE id = ?;");
+        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM Otsikko WHERE otsikko_id = ?;");
         stmt.setObject(1, id);
 
         ResultSet rs = stmt.executeQuery();

@@ -7,19 +7,28 @@
     </head>
 
     <body>
-        <h1>Lisää uusi viestiketju</h1>
+        <h1>Lis&auml;&auml; uusi viestiketju aiheeseen: </h1>  
+        <h2 th:text="${aihe.nimi}">keskusteluaihe</h2>
+
+        <!-- lisätty 29.10.2016-->
+        <ol>
+            <li th:each="aihe: ${aiheet}">
+                <span th:text="${aihe.nimi}">aiheen nimi</span> <a th:href="${'/aiheet/' + aihe.id}">linkki</a>
 
 
+            </li>
+        </ol>
+        <!-- tähän asti lisätty 29.10.2016-->
 
-        <form action="/" method="GET" id="form1">
+        <form action="/otsikot" method="POST" id="form1">
             <input type="hidden" name="aihe" th:value="${aihe.id}"/>
             Otsikko: <input type="text" name="oTeksti" size="60"/> 
             <br/><br/>
-            Viesti: <textarea name="Viesti" rows="10" cols="100"></textarea>
+            Kuvaus: <textarea name="Viesti" rows="10" cols="100"></textarea>
             <br/><br/>
             Nimimerkki: <input type="text" name="nimiM" size="60"/>
             <br/><br/>
-                <button type="submit" form="form1" value="Submit">Lähetä</button>
+            <button type="submit" form="form1" value="Submit">L&auml;het&auml;</button>
         </form>
 
     </body>

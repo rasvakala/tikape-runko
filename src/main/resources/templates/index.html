@@ -4,7 +4,8 @@
     <head><title>Alalaude-forum</title>
         <meta charset="utf-8" />
     </head><br/><br/>
-
+            <h1>ALALAUDE-FOORUMI</h1><br/>
+            
     <nav>
         <!--         <span th:text="${index.kotivisivulle}">Kotisivu</span> <a th:href="${'/index/'}">linkki</a>
                   <span th:text="${aihe.aiheisiin}">Aihe</span> <a th:href="${'/aihe/' + aihe.id}">linkki</a>
@@ -17,11 +18,11 @@
             <form action="/" method="GET" id="form1">
                 Otsikkohaku: <input type="text" name="oTeksti" size="60"/> 
 
-                <button type="submit" form="form1" value="Submit">Hae</button>  <br/>     <br/>     
+                <button type="submit" form="form1" value="Submit">Hae</button>  <br/><br/>     
 
                 Aihehaku: <input type="text" name="aihe" size="60"/> 
 
-                <button type="submit" form="form1" value="Submit">Hae</button>    <br/>   
+                <button type="submit" form="form1" value="Submit1">Hae</button>    <br/>   <br/> 
 
             </form>
             <!--<input type="checkbox" name="nick" value="Nick">Nicks-->   
@@ -30,10 +31,10 @@
 
         <article>
             <h2>Suosituimmat aiheet TOP5</h2>
-            <!-- tähän tulee TOP 5 aiheet, kunhan SELECTit on DAOssa-->
+
             <ol>
                 <li th:each="aihe: ${aiheet5}">
-                    <span th:text="${aihe.nimi}">Aiheet</span> <a th:href="${'/aiheet/' + aihe.id}">linkki</a>
+                    <span th:text="${aihe.nimi}">Aiheet</span> <a th:href="${'/aiheet/' + aihe.id}">viesti aiheeseen</a>
 
 
                 </li>
@@ -44,8 +45,8 @@
         <aside>
             <h2>Uusimmat viestiketjut TOP10</h2>
             <ol>
-                <li th:each="aihe: ${viestit10}">
-                    <span th:text="${viesti.Otsikko}">Viestiketjut</span> <a th:href="${'/viesti/' + viesti.otsikko}">linkki</a>
+                <li th:each="otsikko: ${viestit10}">
+                    <span th:text="${otsikko.teksti}">Viestiketjut</span> <a th:href="${'/otsikot/' + otsikko.id}">linkki</a>
 
 
                 </li>
