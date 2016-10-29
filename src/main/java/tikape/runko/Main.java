@@ -15,7 +15,7 @@ public class Main {
 
     //TODO: Timestampit Stringeiks (for now)
     public static void main(String[] args) throws Exception {
-        
+
         if (System.getenv("PORT") != null) {
             port(Integer.valueOf(System.getenv("PORT")));
         }
@@ -51,12 +51,21 @@ public class Main {
             HashMap map = new HashMap<>();
             map.put("aiheet5", aiheDao.suosituimmatAiheet());
             map.put("viestit10", otsikkoDao.top10Otsikot());
+            String otsikkoHaku = req.queryParams("oTeksti");
+            if (otsikkoHaku != null && !otsikkoHaku.equals("")) {
+                map.put("hakuOtsikot", otsikkoDao.OtsikonJaEkanViestinSanahaku(otsikkoHaku));
+            }
+            String aiheHaku = req.queryParams("aihe");
+            if (aiheHaku != null && !aiheHaku.equals("")) {
+                map.put("hakuAiheet", aiheDao.aiheenOtsikonJaKuvauksenSanahaku(aiheHaku));
+            }
+
             // aseta aiheet5, viestit 10 yms
             return new ModelAndView(map, "index");
         }, new ThymeleafTemplateEngine());
 
 //Tää on hyvä tässä ja lisäksi voisi laittaa vielä pari muuta, esim. otsikot
-         get("/aiheet", (req, res) -> {
+        get("/aiheet", (req, res) -> {
             HashMap map = new HashMap<>();
             map.put("aiheet", aiheDao.findAll());
 
@@ -104,10 +113,9 @@ public class Main {
             return "Kirjoita ketjuun: " + viesti;
             //Viesti(viestiId, nimiM, viesti, aika, otsikkoId);
         });
-            //Viesti(viestiId, nimiM, viesti, aika, otsikkoId);
-        
-        //uusi5 tähän asti
+        //Viesti(viestiId, nimiM, viesti, aika, otsikkoId);
 
+        //uusi5 tähän asti
         //uusi4 lisää aihe
 //        get("/aiheet", (req, res) -> {
 //            HashMap map = new HashMap<>();
@@ -132,7 +140,7 @@ public class Main {
 //        });
         //uusi4 tähän asti
 //uusi3
- get("/otsikot", (req, res) -> {
+        get("/otsikot", (req, res) -> {
             HashMap map = new HashMap<>();
             map.put("otsikot", otsikkoDao.findAll());
 

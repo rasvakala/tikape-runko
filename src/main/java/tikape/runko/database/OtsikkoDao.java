@@ -125,7 +125,7 @@ public class OtsikkoDao implements Dao<Otsikko, Integer> {
         //yksittäisiä sanoja varten käytä parametrinä main-luokan sanalistaKyselymuotoon-metodia, muuten toimii fraasihakuna!
 
         Connection connection = database.getConnection();
-        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM Otsikko WHERE otsikkoteksti LIKE '%?%' OR teksti LIKE '%?%';");
+        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM Otsikko WHERE otsikkoteksti LIKE '%'||?||'%' OR teksti LIKE '%'||?||'%';");
         stmt.setObject(1, merkkijono);
         stmt.setObject(2, merkkijono);
 

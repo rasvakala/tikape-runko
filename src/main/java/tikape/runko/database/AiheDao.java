@@ -91,7 +91,7 @@ public class AiheDao implements Dao<Aihe, Integer> {
         //yksittäisiä sanoja varten käytä main-luokan sanalistaKyselymuotoon-metodia, muuten toimii fraasihakuna!
 
         Connection connection = database.getConnection();
-        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM Aihe WHERE nimi LIKE '%?%' OR kuvaus LIKE '%?%';");
+        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM Aihe WHERE nimi LIKE '%'||?||'%' OR kuvaus LIKE '%'||?||'%';");
         stmt.setObject(1, merkkijono);
         stmt.setObject(2, merkkijono);
 

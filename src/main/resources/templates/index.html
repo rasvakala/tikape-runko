@@ -18,13 +18,24 @@
             <form action="/" method="GET" id="form1">
                 Otsikkohaku: <input type="text" name="oTeksti" size="60"/> 
 
-                <button type="submit" form="form1" value="Submit">Hae</button>  <br/><br/>     
+                <button type="submit" form="form1" value="Submit">Hae</button>  <br/><br/>  </form>
 
+            <ol>
+                <li th:each="otsikko: ${hakuOtsikot}">
+                    <span th:text="${otsikko.teksti}">Viestiketjut</span> <a th:href="${'/otsikot/' + otsikko.id}">linkki</a>
+                </li>
+            </ol>
+
+            <form  action="/" method="GET" id="form2">
                 Aihehaku: <input type="text" name="aihe" size="60"/> 
 
-                <button type="submit" form="form1" value="Submit1">Hae</button>    <br/>   <br/> 
-
+                <button type="submit" form="form2" value="Submit1">Hae</button>    <br/>   <br/> 
             </form>
+            <ol>
+                <li th:each="aihe: ${hakuAiheet}">
+                    <span th:text="${aihe.nimi}">Viestiketjut</span> <a th:href="${'/aiheet/' + aihe.id}">linkki</a>
+                </li>
+            </ol>
             <!--<input type="checkbox" name="nick" value="Nick">Nicks-->   
         </section>
 
