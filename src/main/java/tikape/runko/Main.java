@@ -15,6 +15,10 @@ public class Main {
 
     //TODO: Timestampit Stringeiks (for now)
     public static void main(String[] args) throws Exception {
+        
+        if (System.getenv("PORT") != null) {
+            port(Integer.valueOf(System.getenv("PORT")));
+        }
 
         // käytetään oletuksena paikallista sqlite-tietokantaa
         String jdbcOsoite = "jdbc:sqlite:alalaude.db";
